@@ -1,0 +1,12 @@
+{
+  "name": "UX-Research-Toolkit",
+  "version": "1.0.0",
+  "description": "The UXTK provides a service to easily conduct, collect, and analyze UX feedback surveys.",
+  "main": "index.js",
+  "repository": "https://github.com/DED8IRD/UX-Research-Toolkit.git",
+  "author": "DED8IRD <eunika@pdxcodeguild.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
