@@ -1,19 +1,17 @@
 # User management with Google OAuth
 
-We're going to be starting off with a very difficult task here. This is going to be the most difficult portion of this project. However, the skills you'll gain here will transfer over to many other projects, so it's definitely a worthwhile endeavor.
+We're going to be starting off with a very difficult task here. This is going to be the most difficult portion of this project. However, the skills you'll gain here will transfer over to many other projects, so it's definitely a worthwhile endeavor. 
+
+We're going to be breaking up this portion into several chunks. Check the sub-branches for each section.
 
 ### What is OAuth?
 We want our users to be able to sign up and sign in with their Google accounts rather than entering in their own email information. Since this project is UX minded, we might as well get that extra bit of UX in streamlining the registration process.
 
 ![Sign in with Google](../Google_OAuth_signup.png)
 
-
-
-
 ## Feature Flow
 This is what goes on when we implement Google OAuth.
 The bolded steps are ones that we have to handle in writing our backend logic.
-
 
 Steps 1-5 contain a 2-step verification process for the user and Google to authorize giving us a user's information. You can think of this like registering an account at a site and having to verify your email, except the 2-step portion happens behind the scenes to the user. 
 
@@ -32,3 +30,4 @@ After the user is logged in, we can handle API calls from valid users.
 
 8. User sends request to API. Cookie is automatically included.
 9. **We handle the requests and return responses based on request and whether the user is authorized.**
+
