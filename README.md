@@ -25,3 +25,5 @@ In `index.js`:
 // OR 
 > npm install express
 ```
+
+Then, follow instructions on [the deployment checklist](https://github.com/DED8IRD/NodeReactFullStack/blob/master/3%20Node/docs/Deployment%20Checklist.md)
