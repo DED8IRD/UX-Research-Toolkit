@@ -1,5 +1,5 @@
 // Express application 
-const express = require('express'); // use common js modules
+const express = require('express'); // Use CommonJS modules
 const app = express();
 
 // Route handlers
