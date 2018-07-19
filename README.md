@@ -7,7 +7,7 @@ We're going to be breaking up this portion into several chunks. Check the sub-br
 ### What is OAuth?
 We want our users to be able to sign up and sign in with their Google accounts rather than entering in their own email information. Since this project is UX minded, we might as well get that extra bit of UX in streamlining the registration process.
 
-![Sign in with Google](../Google_OAuth_signup.png)
+![Sign in with Google](https://github.com/DED8IRD/NodeReactFullStack/blob/master/6%20UX%20Research%20Toolkit%20App/Google_OAuth_signup.png)
 
 ## Feature Flow
 This is what goes on when we implement Google OAuth.
