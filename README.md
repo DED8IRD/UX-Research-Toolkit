@@ -17,9 +17,9 @@ Steps 1-5 contain a 2-step verification process for the user and Google to autho
 
 1. User clicks sign in button
 2. **This button click sends a request to our Google auth route handler. Our server redirects request to Google.**
-3. Google asks user if they grant permission. If yes, Google redirects back to our Google auth route handler with a 'code' parameter that is a 'key' to access the user's Google information.
-4. **Put the user on hold, and send a request to Google with the user 'code'.**
-5. If the code matches, Google responds back with user information.
+3. Google asks user if they grant permission. If yes, Google redirects back to our Google auth route handler with a request token that is a 'key' to access the user's Google information.
+4. **Put the user on hold, and send a request to Google with the request token**
+5. If the token is accepted, Google responds back an access token. We can then *access* the user's information with the access token.
 
 In steps 6-7, we handle the user information Google gives us to create a new record in our database and create a cookie for this user.
 
