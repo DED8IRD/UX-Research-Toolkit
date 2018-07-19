@@ -1,6 +1,6 @@
 # Getting our project deployment ready
 
-We're going to deploy UXTK on [Heroku]()
+We're going to deploy UXTK on [Heroku](https://heroku.com/)
 
 To get our code production ready, make the following changes:
 
