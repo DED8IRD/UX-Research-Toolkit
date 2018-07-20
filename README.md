@@ -14,6 +14,87 @@ If you want your app to have multiple types of authentication (e.g. Google *and*
 
 UXTK is only going to have one strategy: Google.
 
+## Set up Passport and Google OAuth
+### Install Passport
+```
+> yarn add passport
+// OR 
+> npm install passport
+```
+
+### Install Google OAuth Strategy
+```
+> yarn add passport-google-oauth
+// OR
+> npm install passport-google-oauth
+```
+
+### Use Strategy
+#### Set up Google application and get credentials
+To use the Passport Google OAuth strategy, we need to first set up a Google app. 
+
+1. Head to <https://console.developers.google.com> and create a new project.
+2. Enable Google Plus API
+	- Note: There is no Google OAuth API, what you want is actually contained in the Google+ API
+3. Create new API credential
+	- Click on **Credentials** in the sidebar. 
+	- Select **OAuth client ID** as the type of credential.
+	- Configure consent screen
+		- The only required field is **product name**. You can configure the other fields later on.
+	- Select **web application** for application type.
+	- Under **Restrictions**:
+		- Enter `http://localhost:5000` for **authorized JavaScript origins**.
+		- Enter `http://localhost:5000/auth/google/callback` for **authorized redirect URIs** 
+
+Step 3 should give you your application's:
+- **clientID**: public token that identifies our application to the API
+- **clientSecret**: private token (do not publish this!)
+
+To keep these keys secret, you should store them in a separate JavaScript file and export them. Make sure to configure `.gitignore` to ignore any files containing secret keys.
+
+Example of `./config/keys.js`:
+```js
+module.exports = {
+	googleClientID: 'your-client-id-token',
+	googleClientSecret: 'your-client-secret-key'
+}
+```
+
+#### Import Passport and Google Strategy
+To use Passport and Google OAuth, we need import them into our Express app.
+
+In `index.js`:
+```js
+const passport = require("passport");
+const googleOAuthStrategy = require('passport-google-oauth').OAuth2Strategy;
+const keys = require("./config/keys");
+```
+
+#### To use a strategy
+`passport.use()` takes a strategy instance. The strategy instance takes two arguments: 
+
+1. An object with three required parameters:
+
+  	- clientID 
+  	- clientSecret
+  	- callbackURL
+
+2. accessToken callback
+
+In `index.js`:
+ ```js
+passport.use(new googleOAuthStrategy(
+  {
+    clientID: keys.googleClientID,
+    clientSecret: keys.googleClientSecret,
+    callbackURL: '/auth/google/callback'
+  },
+  accessToken => {
+    console.log(accessToken);
+  }
+));
+```
+
 ## Feature Flow
 This is what goes on when we implement Google OAuth.
 The bolded steps are ones that we have to handle in writing our backend logic.
