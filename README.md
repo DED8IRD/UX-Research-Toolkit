@@ -95,6 +95,47 @@ passport.use(new googleOAuthStrategy(
 ));
 ```
 
+Now that we have set up our strategy, let's hook it up to some routes. Create a route handler for http://localhost:5000/auth/google
+
+In `index.js`:
+```js
+// Google OAuth authenticate
+app.get(
+	'/auth/google', 
+	passport.authenticate('google', {
+		scope: ['profile', 'email']
+	})
+);
+```
+We can see that the second parameter for our route handler is a Passport method `passport.authenticate()`. We're telling our passport instance that the provider strategy we are calling is Google, and the information we want to access are a user's profile and email.
+
+At this point, if you run your server and try to access <http://localhost:5000/auth/google/>, you should get redirected to Google's sign in screen. 
+When you select an account, you will get redirected to a page with a 404 and this error message: `Cannot GET /auth/google/callback`.
+
+This makes perfect sense, we haven't actually created a route handler for `/auth/google/callback` yet, so let's go ahead and do that.
+
+In `index.js`:
+```js
+// Google OAuth callback
+app.get(
+	'/auth/google/callback', 
+	passport.authenticate('google')
+);
+```
+
+Restart your server, and try to access <http://localhost:5000/auth/google/> again. When you select an account, you'll find that it stalls onscreen. However, if you open your terminal, you'll find a long string printed. This is an **access token**. 
+
+Recall the following line in `passport.use()` in `index.js`:
+```js
+  accessToken => {
+    console.log(accessToken);
+  }
+```
+
+Although the app stalls, we're successfully printing the access token. This means that everything is connecting! Note that we aren't actually handling any of the user information yet. We are midway through step four in the [feature flow](#passportjs-handles-steps-2-5).
+
+Let's consider this a stopping point. We'll continue onwards in a later section.
+
 ## Feature Flow
 This is what goes on when we implement Google OAuth.
 The bolded steps are ones that we have to handle in writing our backend logic.
