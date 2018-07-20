@@ -1,7 +1,7 @@
 // Express application
 const express = require('express'); // Use CommonJS modules
 const passport = require('passport');
-const googleOAuthStrategy = require('passpor t-google-oauth').OAuth2Strategy;
+const googleOAuthStrategy = require('passport-google-oauth').OAuth2Strategy;
 const keys = require('./config/keys');
 
 const app = express();
@@ -18,6 +18,7 @@ passport.use(new googleOAuthStrategy(
 ));
 
 // Route handlers
+// Home
 app.get(
 	'/', 
 	(req, res) => {
@@ -25,11 +26,18 @@ app.get(
 	}
 );
 
+// Google OAuth authenticate
 app.get(
-	'/auth/google/', 
+	'/auth/google', 
 	passport.authenticate('google', {
 		scope: ['profile', 'email']
 	})
+);
+
+// Google OAuth callback
+app.get(
+	'/auth/google/callback', 
+	passport.authenticate('google')
 );
 
 const PORT = process.env.PORT || 5000;
