@@ -1,13 +1,26 @@
 # User management with OAuth: PassportJS
 
+**Table of Contents**  
+  - [What is PassportJS?](#what-is-passportjs)
+    - [Passport Strategies](#passport-strategies)
+  - [Set up Passport and Google OAuth](#set-up-passport-and-google-oauth)
+    - [Install Passport](#install-passport)
+    - [Install Google OAuth Strategy](#install-google-oauth-strategy)
+    - [Use Strategy](#use-strategy)
+      - [Set up Google application and get credentials](#set-up-google-application-and-get-credentials)
+      - [Import Passport and Google Strategy](#import-passport-and-google-strategy)
+      - [To use a strategy](#to-use-a-strategy)
+  - [Feature Flow](#feature-flow)
+      - [PassportJS handles steps 2-5](#passportjs-handles-steps-2-5)
+
 We're going to be a library to help us streamline some of the processes we outlined in our feature flow: [PassportJS](http://www.passportjs.org/).
 
 Steps 2-5 of our [feature flow](#feature-flow) will be handled with PassportJS.
 
-### What is PassportJS?
+## What is PassportJS?
 Passport is authentication middleware for Node that allows you to easily implement third-party sign in authentication, such as logging in through a user's Google, FaceBook, or Twitter accounts.
 
-#### Passport Strategies
+### Passport Strategies
 Each type of third-party authentication provider (e.g. Google is one provider, FaceBook another) has its own **strategy**. This strategy is its own library that you set up with PassportJS.
 
 If you want your app to have multiple types of authentication (e.g. Google *and* FaceBook), you will need to install *multiple strategies*.
