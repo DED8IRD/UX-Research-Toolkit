@@ -155,7 +155,7 @@ Recall the following line in `passport.use()` in `index.js`:
 
 Although the app stalls, we're successfully accessing the user's accessToken and profile information. This means that everything is connecting! Note that we aren't actually handling any of the user information yet. We are midway through step four in the [feature flow](#passportjs-handles-steps-2-5).
 
-Let's consider this a stopping point. We'll continue onwards in the next section, where we actually create a database entry representing the user and handle user authentication within our app.
+Let's consider this a stopping point. We'll continue onwards in a later section, where we actually create a database entry representing the user and handle user authentication within our app.
 
 ## Feature Flow
 This is what goes on when we implement Google OAuth.
