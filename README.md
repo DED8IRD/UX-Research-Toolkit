@@ -92,7 +92,11 @@ const keys = require("./config/keys");
   	- clientSecret
   	- callbackURL
 
-2. accessToken callback
+2. Verify callback with four parameters:
+	- accessToken
+	- refreshToken
+	- profile
+	- done
 
 In `index.js`:
  ```js
@@ -102,8 +106,10 @@ passport.use(new googleOAuthStrategy(
     clientSecret: keys.googleClientSecret,
     callbackURL: '/auth/google/callback'
   },
-  accessToken => {
-    console.log(accessToken);
+  (accessToken, refreshToken, profile, done) => {
+    console.log('accessToken: ', accessToken);
+    console.log('refreshToken: ', refreshToken);
+    console.log('profile: ', profile);
   }
 ));
 ```
@@ -136,18 +142,20 @@ app.get(
 );
 ```
 
-Restart your server, and try to access <http://localhost:5000/auth/google/> again. When you select an account, you'll find that it stalls onscreen. However, if you open your terminal, you'll find a long string printed. This is an **access token**. 
+Restart your server, and try to access <http://localhost:5000/auth/google/> again. When you select an account, you'll find that it stalls onscreen. However, if you open your terminal, you'll find that our verify callback parameters are logged. 
 
 Recall the following line in `passport.use()` in `index.js`:
 ```js
-  accessToken => {
-    console.log(accessToken);
+  (accessToken, refreshToken, profile, done) => {
+    console.log('accessToken: ', accessToken);
+    console.log('refreshToken: ', refreshToken);
+    console.log('profile: ', profile);
   }
 ```
 
-Although the app stalls, we're successfully printing the access token. This means that everything is connecting! Note that we aren't actually handling any of the user information yet. We are midway through step four in the [feature flow](#passportjs-handles-steps-2-5).
+Although the app stalls, we're successfully accessing the user's accessToken and profile information. This means that everything is connecting! Note that we aren't actually handling any of the user information yet. We are midway through step four in the [feature flow](#passportjs-handles-steps-2-5).
 
-Let's consider this a stopping point. We'll continue onwards in a later section.
+Let's consider this a stopping point. We'll continue onwards in the next section, where we actually create a database entry representing the user and handle user authentication within our app.
 
 ## Feature Flow
 This is what goes on when we implement Google OAuth.
