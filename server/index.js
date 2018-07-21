@@ -1,24 +1,9 @@
 // Express application
 const express = require('express'); // Use CommonJS modules
-const passport = require('passport');
-const googleOAuthStrategy = require('passport-google-oauth').OAuth2Strategy;
-const keys = require('./config/keys');
-
+const userAuthRoutes = require('./routes/userAuthRoutes');
 const app = express();
+require('./services/passport');
 
-passport.use(new googleOAuthStrategy(
-	{
-		clientID: keys.googleClientID,
-		clientSecret: keys.googleClientSecret,
-		callbackURL: '/auth/google/callback'
-	},
-	(accessToken, refreshToken, profile, done) => {
-		console.log('accessToken: ', accessToken);
-		console.log('refreshToken: ', refreshToken);
-		console.log('profile: ', profile);
-		console.log('done: ', done);
-	}
-));
 
 // Route handlers
 // Home
@@ -29,19 +14,8 @@ app.get(
 	}
 );
 
-// Google OAuth authenticate
-app.get(
-	'/auth/google', 
-	passport.authenticate('google', {
-		scope: ['profile', 'email']
-	})
-);
-
-// Google OAuth callback
-app.get(
-	'/auth/google/callback', 
-	passport.authenticate('google')
-);
+// Auth routes
+userAuthRoutes(app);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT);
