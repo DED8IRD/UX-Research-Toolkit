@@ -1,4 +1,8 @@
-# User management with OAuth: PassportJS
+# Refactor Server Code
+
+In this section, we will refactor our backend code into more organized, modular pieces. 
+
+Our Express app will have this structure.
 
 **Table of Contents**  
   - [What is PassportJS?](#what-is-passportjs)
