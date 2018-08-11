@@ -61,6 +61,13 @@ Inside `index.js`, make sure to require `User.js` to actually run the code and c
 require('./models/User');
 ```
 
+### Create User Record
+To create an actual **record** or User instance:
+```js
+const User = mongoose.model('user');
+new User({ 'googleID': profile.id }).save();
+```
+
 ## Feature Flow
 This is what goes on when we implement Google OAuth.
 The bolded steps are ones that we have to handle in writing our backend logic.
