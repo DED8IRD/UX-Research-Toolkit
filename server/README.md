@@ -1,161 +1,65 @@
-# User management with OAuth: PassportJS
+# MongoDB
 
-**Table of Contents**  
-  - [What is PassportJS?](#what-is-passportjs)
-    - [Passport Strategies](#passport-strategies)
-  - [Set up Passport and Google OAuth](#set-up-passport-and-google-oauth)
-    - [Install Passport](#install-passport)
-    - [Install Google OAuth Strategy](#install-google-oauth-strategy)
-    - [Use Strategy](#use-strategy)
-      - [Set up Google application and get credentials](#set-up-google-application-and-get-credentials)
-      - [Import Passport and Google Strategy](#import-passport-and-google-strategy)
-      - [To use a strategy](#to-use-a-strategy)
-  - [Feature Flow](#feature-flow)
-      - [PassportJS handles steps 2-5](#passportjs-handles-steps-2-5)
+So far, we have set up [steps 1-5 of UXTK's feature flow](#feature-flow). To complete step 6, we need to set up MongoDB. 
 
-We're going to be a library to help us streamline some of the processes we outlined in our feature flow: [PassportJS](http://www.passportjs.org/).
+We're going to use a tool called [Mongoose](http://mongoosejs.com/docs/) to help us.
 
-Steps 2-5 of our [feature flow](#feature-flow) will be handled with PassportJS.
+To use MongoDB, you can either install a local database or use a remote hosting service. I'm using [mLab](https://mlab.com/) to host UXTK's database. 
 
-## What is PassportJS?
-Passport is authentication middleware for Node that allows you to easily implement third-party sign in authentication, such as logging in through a user's Google, FaceBook, or Twitter accounts.
+### Database-as-a-Service
+For this course, we will use [mLab](https://mlab.com/) to host our database, since it provides free hosting (up to 500mb total) for unlimited projects.
 
-### Passport Strategies
-Each type of third-party authentication provider (e.g. Google is one provider, FaceBook another) has its own **strategy**. This strategy is its own library that you set up with PassportJS.
+To use:
+1. Set up an account 
+4. Create a new MongoDB deployment
+3. Add database user
 
-If you want your app to have multiple types of authentication (e.g. Google *and* FaceBook), you will need to install *multiple strategies*.
-
-UXTK is only going to have one strategy: Google.
-
-## Set up Passport and Google OAuth
-### Install Passport
+### Install Mongoose
+Once you have your database set up, make sure to install Mongoose.js next.
 ```
-> yarn add passport
-// OR 
-> npm install passport
-```
-
-### Install Google OAuth Strategy
-```
-> yarn add passport-google-oauth
+> yarn add mongoose 
 // OR
-> npm install passport-google-oauth
-```
+> npm install mongoose
+``` 
 
-### Use Strategy
-#### Set up Google application and get credentials
-To use the Passport Google OAuth strategy, we need to first set up a Google app. 
-
-1. Head to <https://console.developers.google.com> and create a new project.
-2. Enable Google Plus API
-	- Note: There is no Google OAuth API, what you want is actually contained in the Google+ API
-3. Create new API credential
-	- Click on **Credentials** in the sidebar. 
-	- Select **OAuth client ID** as the type of credential.
-	- Configure consent screen
-		- The only required field is **product name**. You can configure the other fields later on.
-	- Select **web application** for application type.
-	- Under **Restrictions**:
-		- Enter `http://localhost:5000` for **authorized JavaScript origins**.
-		- Enter `http://localhost:5000/auth/google/callback` for **authorized redirect URIs** 
-
-Step 3 should give you your application's:
-- **clientID**: public token that identifies our application to the API
-- **clientSecret**: private token (do not publish this!)
-
-To keep these keys secret, you should store them in a separate JavaScript file and export them. Make sure to configure `.gitignore` to ignore any files containing secret keys.
-
-Example of `./config/keys.js`:
-```js
-module.exports = {
-	googleClientID: 'your-client-id-token',
-	googleClientSecret: 'your-client-secret-key'
-}
-```
-
-#### Import Passport and Google Strategy
-To use Passport and Google OAuth, we need import them into our Express app.
+### Connect Mongoose to MongoDB
+Import Mongoose and [connect to Mongo URI](https://docs.mlab.com/connecting/#connect-string).
 
 In `index.js`:
 ```js
-const passport = require("passport");
-const googleOAuthStrategy = require('passport-google-oauth').OAuth2Strategy;
-const keys = require("./config/keys");
+const mongoose = require('mongoose');
+mongoose.connect('mongodb://<dbuser>:<dbpassword>@your-mongo-uri.mlab.com')
 ```
 
-#### To use a strategy
-`passport.use()` takes a strategy instance. The strategy instance takes two arguments: 
-
-1. An object with three required parameters:
-
-  	- clientID 
-  	- clientSecret
-  	- callbackURL
-
-2. Verify callback with four parameters:
-	- accessToken
-	- refreshToken
-	- profile
-	- done
-
-In `index.js`:
- ```js
-passport.use(new googleOAuthStrategy(
-  {
-    clientID: keys.googleClientID,
-    clientSecret: keys.googleClientSecret,
-    callbackURL: '/auth/google/callback'
-  },
-  (accessToken, refreshToken, profile, done) => {
-    console.log('accessToken: ', accessToken);
-    console.log('refreshToken: ', refreshToken);
-    console.log('profile: ', profile);
-  }
-));
-```
-
-Now that we have set up our strategy, let's hook it up to some routes. Create a route handler for http://localhost:5000/auth/google
-
-In `index.js`:
+Note that your Mongo URI should be a *secret*, so you should put it inside `./config/keys` and import it to `index.js`.
 ```js
-// Google OAuth authenticate
-app.get(
-	'/auth/google', 
-	passport.authenticate('google', {
-		scope: ['profile', 'email']
-	})
-);
+const keys = require('./config/keys');
+mongoose.connect(keys.mongoURI);
 ```
-We can see that the second parameter for our route handler is a Passport method `passport.authenticate()`. We're telling our passport instance that the provider strategy we are calling is Google, and the information we want to access are a user's profile and email.
 
-At this point, if you run your server and try to access <http://localhost:5000/auth/google/>, you should get redirected to Google's sign in screen. 
-When you select an account, you will get redirected to a page with a 404 and this error message: `Cannot GET /auth/google/callback`.
+### Create User Collection
+We're going to create a **Model Class** with Mongoose. This model class will represent a **User Collection** inside our MongoDB database.
 
-This makes perfect sense, we haven't actually created a route handler for `/auth/google/callback` yet, so let's go ahead and do that.
+To organize our models, create a new directory called `models/` inside `server/`. Create a new file for your User model `User.js`.
 
-In `index.js`:
+In `./models/User.js`:
 ```js
-// Google OAuth callback
-app.get(
-	'/auth/google/callback', 
-	passport.authenticate('google')
-);
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
+
+// Define user schema using Object of <field:datatype> pairs
+const userSchema = new Schema({
+	googleID: String
+});
+
+// Create model class
+mongoose.model('user', userSchema);
 ```
 
-Restart your server, and try to access <http://localhost:5000/auth/google/> again. When you select an account, you'll find that it stalls onscreen. However, if you open your terminal, you'll find that our verify callback parameters are logged. 
-
-Recall the following line in `passport.use()` in `index.js`:
+Inside `index.js`, make sure to require `User.js` to actually run the code and create the User model:
 ```js
-  (accessToken, refreshToken, profile, done) => {
-    console.log('accessToken: ', accessToken);
-    console.log('refreshToken: ', refreshToken);
-    console.log('profile: ', profile);
-  }
+require('./models/User');
 ```
-
-Although the app stalls, we're successfully accessing the user's accessToken and profile information. This means that everything is connecting! Note that we aren't actually handling any of the user information yet. We are midway through step four in the [feature flow](#passportjs-handles-steps-2-5).
-
-Let's consider this a stopping point. We'll continue onwards in a later section, where we actually create a database entry representing the user and handle user authentication within our app.
 
 ## Feature Flow
 This is what goes on when we implement Google OAuth.
@@ -172,7 +76,7 @@ Steps 1-5 contain a 2-step verification process for the user and Google to autho
 5. If the token is accepted, Google responds back an access token. We can then *access* the user's information with the access token.
 
 In steps 6-7, we handle the user information Google gives us to create a new record in our database and create a cookie for this user.
-
+#### MongoDB/Mongoose database for steps 6-7
 6. **Create record in MongoDB database using user information returned by Google.**
 7. **Set userid in cookie for this user and redirect them back to homepage.** The user is logged in and authenticated now.
 
