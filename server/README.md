@@ -83,21 +83,33 @@ passport.use(new googleOAuthStrategy(
 	(accessToken, refreshToken, profile, done) => {
 		// --- Insert logic here: ---
 			// Query DB for user given the Google ID
-			User.findOne({ googleID: profile.id }).then((existingUser) => {
-				// If authorized user exists in database, query database for user's info
-				if (existingUser) {
-					...
-				// Else create new user
-				} else { 
-					new User({
-						googleID: profile.id
-					}).save();
-				}
-			})		
+			User.findOne({ googleID: profile.id })
+				.then((existingUser) => {
+					// If authorized user exists in database, query database for user's info
+					if (existingUser) {
+						...
+					// Else create new user
+					} else { 
+						new User({
+							googleID: profile.id
+						}).save();
+					}
+				})		
 		// --------------------------
 	}
 ));
 ```
+
+### Call `done()` to Complete Authentication
+You probably noticed by this point that your application stalls. We know that we are successfully creating user instances by checking our user collection on mLab, but the web app itself stalls and eventually gives you an error.
+
+We're missing a crucial step: we need to tell PassportJS when we complete our operation to continue the authentication process.
+
+To do this, we need to call `done()`. We already included the `done` function as a parameter in our callback function: `(accessToken, refreshToken, profile, done) => {...}`
+
+`done(err, record)`
+
+
 
 ## Feature Flow
 This is what goes on when we implement Google OAuth.

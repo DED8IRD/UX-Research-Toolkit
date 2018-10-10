@@ -14,17 +14,20 @@ passport.use(
 			callbackURL: "/auth/google/callback"
 		},
 		(accessToken, refreshToken, profile, done) => {
-			User.findOne({ googleID: profile.id }).then((existingUser) => {
+			User.findOne({ googleID: profile.id })
+			.then(existingUser => {
 				// If authorized user exists in database, query database for user's info
 				if (existingUser) {
-
+					done(null, existingUser);
+				
 				// Else create new user
-				} else { 
+				} else {
 					new User({
 						googleID: profile.id
-					}).save();
+					}).save()
+					.then(newUser => done(null, newUser));
 				}
-			})
+			});
 		}
 	)
 );

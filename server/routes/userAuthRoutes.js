@@ -2,6 +2,8 @@
 const passport = require('passport');
 
 module.exports = (app) => {
+	app.use(passport.initialize()) // Initialize PassportJS module
+
 	// Google
 	// authenticate
 	app.get(
