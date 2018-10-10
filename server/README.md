@@ -68,6 +68,37 @@ const User = mongoose.model('user');
 new User({ 'googleID': profile.id }).save();
 ```
 
+### Check if User Exists in Database 
+So far, every time a user logs in, a new user record is created. We only want to add a user record *once* when they first sign on. 
+
+To fix this, we have to first check if the user exists in our database:
+
+1. If user exists: return that user's data.
+2. Else: create a new user record.
+
+In `./services/passport.js`:
+```js
+passport.use(new googleOAuthStrategy(
+	...,
+	(accessToken, refreshToken, profile, done) => {
+		// --- Insert logic here: ---
+			// Query DB for user given the Google ID
+			User.findOne({ googleID: profile.id }).then((existingUser) => {
+				// If authorized user exists in database, query database for user's info
+				if (existingUser) {
+					...
+				// Else create new user
+				} else { 
+					new User({
+						googleID: profile.id
+					}).save();
+				}
+			})		
+		// --------------------------
+	}
+));
+```
+
 ## Feature Flow
 This is what goes on when we implement Google OAuth.
 The bolded steps are ones that we have to handle in writing our backend logic.
@@ -83,6 +114,7 @@ Steps 1-5 contain a 2-step verification process for the user and Google to autho
 5. If the token is accepted, Google responds back an access token. We can then *access* the user's information with the access token.
 
 In steps 6-7, we handle the user information Google gives us to create a new record in our database and create a cookie for this user.
+
 #### MongoDB/Mongoose database for steps 6-7
 6. **Create record in MongoDB database using user information returned by Google.**
 7. **Set userid in cookie for this user and redirect them back to homepage.** The user is logged in and authenticated now.

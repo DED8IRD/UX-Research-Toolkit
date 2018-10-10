@@ -8,5 +8,5 @@ const userSchema = new Schema({
 });
 
 // Create model class
-mongoose.model('user', userSchema);
+mongoose.model('User', userSchema);
 
