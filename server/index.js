@@ -9,6 +9,7 @@ require('./services/passport');
 
 // Connect MongoDB instance
 mongoose.connect(keys.mongoURI)
+mongoose.Promise = global.Promise;
 
 // Route handlers
 // Home

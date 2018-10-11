@@ -1,3 +1,23 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [MongoDB](#mongodb)
+    - [Database-as-a-Service](#database-as-a-service)
+    - [Install Mongoose](#install-mongoose)
+    - [Connect Mongoose to MongoDB](#connect-mongoose-to-mongodb)
+    - [Create User Collection](#create-user-collection)
+    - [Create User Record](#create-user-record)
+    - [Check if User Exists in Database](#check-if-user-exists-in-database)
+    - [Call `done()` to Complete Authentication](#call-done-to-complete-authentication)
+    - [Serialize User](#serialize-user)
+    - [Deserialize User](#deserialize-user)
+  - [Feature Flow](#feature-flow)
+      - [PassportJS handles steps 2-5](#passportjs-handles-steps-2-5)
+      - [MongoDB/Mongoose database for steps 6-7](#mongodbmongoose-database-for-steps-6-7)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # MongoDB
 
 So far, we have set up [steps 1-5 of UXTK's feature flow](#feature-flow). To complete step 6, we need to set up MongoDB. 
@@ -84,17 +104,17 @@ passport.use(new googleOAuthStrategy(
 		// --- Insert logic here: ---
 			// Query DB for user given the Google ID
 			User.findOne({ googleID: profile.id })
-				.then((existingUser) => {
-					// If authorized user exists in database, query database for user's info
-					if (existingUser) {
-						...
-					// Else create new user
-					} else { 
-						new User({
-							googleID: profile.id
-						}).save();
-					}
-				})		
+			.then((existingUser) => {
+				// If authorized user exists in database, query database for user's info
+				if (existingUser) {
+					...
+				// Else create new user
+				} else { 
+					new User({
+						googleID: profile.id
+					}).save();
+				}
+			})		
 		// --------------------------
 	}
 ));
@@ -107,8 +127,49 @@ We're missing a crucial step: we need to tell PassportJS when we complete our op
 
 To do this, we need to call `done()`. We already included the `done` function as a parameter in our callback function: `(accessToken, refreshToken, profile, done) => {...}`
 
-`done(err, record)`
+To call `done`, you need to pass in an error object and a record instance `done(err, record)`
 
+In `./services/passport.js`:
+```js
+		User.findOne({ googleID: profile.id })
+		.then((existingUser) => {
+			// If authorized user exists in database, query database for user's info
+			if (existingUser) {
+				done(null, existingUser);
+			// Else create new user
+			} else { 
+				new User({
+					googleID: profile.id
+				}).save()
+				.then(newUser => done(null, newUser));
+			}
+		})		
+
+```
+
+### Sessions
+Most web apps use cookies to persist login. This means that you only need to access the credentials necessary to authenticate a user (i.e. username and password, or in this case, third-party OAuth) during the login request. If the login is authenticated, a unique cookie is set in the user's browser to establish a  session. Each subsequent request the user makes will not contain credentials--instead, the request will pass the cookie identifying the user's current session.
+
+To support login sessions, PassportJS **serializes** and **deserializes** user instances to and from the session. You'll need to define the following methods: `passport.serializeUser` and `passport.deserializeUser`.
+
+These methods allow the user's data to be saved and retrieved from a session. 
+
+In `./services/passport.js` before `passport.use(...)`:
+
+#### Serialize User  
+```js
+passport.serializeUser((user, done) => {
+	done(null, user.id);
+});
+```
+
+#### Deserialize User 
+```js
+passport.deserializeUser((id, done) => {
+	User.findById(id)
+	.then(user => done(null, user));
+});
+```
 
 
 ## Feature Flow
