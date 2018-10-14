@@ -1,15 +1,17 @@
 // Express application
 const express = require("express");
 const mongoose = require("mongoose");
-const keys = require("./config/keys");
+const passport = require("passport");
+
 const app = express();
+const keys = require("./config/keys");
 const userAuthRoutes = require("./routes/userAuthRoutes");
 require("./models/User");
-require("./services/passport");
 
 // Initialize Passport
 app.use(passport.initialize());
 app.use(passport.session());
+require("./services/passport");
 
 // Connect MongoDB instance
 mongoose.connect(keys.mongoURI);
