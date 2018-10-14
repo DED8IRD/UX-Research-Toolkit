@@ -1,3 +1,23 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [MongoDB](#mongodb)
+    - [Database-as-a-Service](#database-as-a-service)
+    - [Install Mongoose](#install-mongoose)
+    - [Connect Mongoose to MongoDB](#connect-mongoose-to-mongodb)
+    - [Create User Collection](#create-user-collection)
+    - [Create User Record](#create-user-record)
+    - [Check if User Exists in Database](#check-if-user-exists-in-database)
+    - [Call `done()` to Complete Authentication](#call-done-to-complete-authentication)
+    - [Serialize User](#serialize-user)
+    - [Deserialize User](#deserialize-user)
+  - [Feature Flow](#feature-flow)
+      - [PassportJS handles steps 2-5](#passportjs-handles-steps-2-5)
+      - [MongoDB/Mongoose database for steps 6-7](#mongodbmongoose-database-for-steps-6-7)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # MongoDB
 
 So far, we have set up [steps 1-5 of UXTK's feature flow](#feature-flow). To complete step 6, we need to set up MongoDB. 
@@ -84,17 +104,17 @@ passport.use(new googleOAuthStrategy(
 		// --- Insert logic here: ---
 			// Query DB for user given the Google ID
 			User.findOne({ googleID: profile.id })
-				.then((existingUser) => {
-					// If authorized user exists in database, query database for user's info
-					if (existingUser) {
-						...
-					// Else create new user
-					} else { 
-						new User({
-							googleID: profile.id
-						}).save();
-					}
-				})		
+			.then((existingUser) => {
+				// If authorized user exists in database, query database for user's info
+				if (existingUser) {
+					...
+				// Else create new user
+				} else { 
+					new User({
+						googleID: profile.id
+					}).save();
+				}
+			})		
 		// --------------------------
 	}
 ));
@@ -107,9 +127,25 @@ We're missing a crucial step: we need to tell PassportJS when we complete our op
 
 To do this, we need to call `done()`. We already included the `done` function as a parameter in our callback function: `(accessToken, refreshToken, profile, done) => {...}`
 
-`done(err, record)`
+To call `done`, you need to pass in an error object and a record instance `done(err, record)`
 
+In `./services/passport.js`:
+```js
+		User.findOne({ googleID: profile.id })
+		.then((existingUser) => {
+			// If authorized user exists in database, query database for user's info
+			if (existingUser) {
+				done(null, existingUser);
+			// Else create new user
+			} else { 
+				new User({
+					googleID: profile.id
+				}).save()
+				.then(newUser => done(null, newUser));
+			}
+		})		
 
+```
 
 ## Feature Flow
 This is what goes on when we implement Google OAuth.

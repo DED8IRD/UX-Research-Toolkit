@@ -2,13 +2,14 @@
 const express = require('express'); 
 const mongoose = require('mongoose'); 
 const keys = require('./config/keys');
-const app = express();
 const userAuthRoutes = require('./routes/userAuthRoutes');
+const app = express();
 require('./models/User');
 require('./services/passport');
 
 // Connect MongoDB instance
 mongoose.connect(keys.mongoURI)
+mongoose.Promise = global.Promise;
 
 // Route handlers
 // Home
