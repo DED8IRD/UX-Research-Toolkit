@@ -10,7 +10,7 @@
 Since we wrapped up the OAuth segment, now's a great time to deploy! 
 
 ```
-git push heroku 
+> git push heroku 
 ```
 
 When you try to access your site, you should get this error: `Error: Cannot find module './config/keys'`. This is because we've configured our `.gitignore` to ignore our secret dev keys, *as we should*. 
@@ -70,3 +70,13 @@ if (process.env.NODE_ENV === "production") {
 ```
 
 4. Modify `.gitignore` to ignore only `dev-keys.js`
+
+## Set up environment variables
+1. Go to [heroku.com] and select your app.
+2. Go to **Settings > Config Vars**
+3. Add your production keys
+4. Push to Heroku 
+```
+> git push heroku 
+```
+
