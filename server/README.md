@@ -2,10 +2,9 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [Enable Cookies to Store User Sessions](#enable-cookies-to-store-user-sessions)
-  - [Sessions](#sessions)
-      - [Serialize User](#serialize-user)
-      - [Deserialize User](#deserialize-user)
+- [Finish Login, Logout, and Redirect](#finish-login-logout-and-redirect)
+  - [Redirect](#redirect)
+  - [Logout](#logout)
   - [Feature Flow](#feature-flow)
       - [PassportJS handles steps 2-5](#passportjs-handles-steps-2-5)
       - [MongoDB/Mongoose database for steps 6-7](#mongodbmongoose-database-for-steps-6-7)
@@ -15,9 +14,40 @@
 # Finish Login, Logout, and Redirect
 This is the final portion of the OAuth section. 
 
+## Redirect 
+If you run your app, you should see an error like this: `Cannot GET /auth/google/callback`. This is because we haven't set up a response for OAuth authentication. To fix this, we can define a callback function or specify redirect paths.
+
+Let's specify redirect paths for successful and failed authentication in our callback route. Pass in an object with your desired `successRedirect` and `failureRedirect` as the second argument in `passport.authenticate()`
+
+In `./routes/userAuthRoutes.js`:
+```js
+// callback
+app.get(
+	'/auth/google/callback', 
+	passport.authenticate('google', {
+		successRedirect: '/profile',
+		failureRedirect: '/auth/google'
+	})
+);
+```
+
 ## Logout 
+Logging out is very simple with PassportJS. Passport exposes a `logout()` function on `req`  that can be called from any route handler.  Calling `logout()` will remove the `req.user` property and clear the login session (if any).
 
+In `./routes/userAuthRoutes.js`:
+```js
+app.get(
+	'/auth/logout',
+	(req, res) => {
+		req.logout()
+		res.send("You are logged out.")
+	}
+)
+```
 
+This completes the OAuth section. This will be the same process you'll take to set up OAuth with PassportJS and Express in just about any web app. You can repeat this process with other strategies, such as FaceBook OAuth. 
+
+In the next section, we will set up our production environment and push our changes to our Heroku deployment. 
 
 
 ## Feature Flow
