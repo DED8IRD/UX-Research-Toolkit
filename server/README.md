@@ -2,152 +2,21 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [MongoDB](#mongodb)
-    - [Database-as-a-Service](#database-as-a-service)
-    - [Install Mongoose](#install-mongoose)
-    - [Connect Mongoose to MongoDB](#connect-mongoose-to-mongodb)
-    - [Create User Collection](#create-user-collection)
-    - [Create User Record](#create-user-record)
-    - [Check if User Exists in Database](#check-if-user-exists-in-database)
-    - [Call `done()` to Complete Authentication](#call-done-to-complete-authentication)
-    - [Serialize User](#serialize-user)
-    - [Deserialize User](#deserialize-user)
+- [Enable Cookies to Store User Sessions](#enable-cookies-to-store-user-sessions)
+  - [Sessions](#sessions)
+      - [Serialize User](#serialize-user)
+      - [Deserialize User](#deserialize-user)
   - [Feature Flow](#feature-flow)
       - [PassportJS handles steps 2-5](#passportjs-handles-steps-2-5)
       - [MongoDB/Mongoose database for steps 6-7](#mongodbmongoose-database-for-steps-6-7)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# MongoDB
+# Enable Cookies to Store User Sessions
 
-So far, we have set up [steps 1-5 of UXTK's feature flow](#feature-flow). To complete step 6, we need to set up MongoDB. 
+So far, we have set up [steps 1-6 of UXTK's feature flow](#feature-flow). To complete step 7, we need to enable cookies and sessions. 
 
-We're going to use a tool called [Mongoose](http://mongoosejs.com/docs/) to help us.
-
-To use MongoDB, you can either install a local database or use a remote hosting service. I'm using [mLab](https://mlab.com/) to host UXTK's database. 
-
-### Database-as-a-Service
-For this course, we will use [mLab](https://mlab.com/) to host our database, since it provides free hosting (up to 500mb total) for unlimited projects.
-
-To use:
-1. Set up an account 
-4. Create a new MongoDB deployment
-3. Add database user
-
-### Install Mongoose
-Once you have your database set up, make sure to install Mongoose.js next.
-```
-> yarn add mongoose 
-// OR
-> npm install mongoose
-``` 
-
-### Connect Mongoose to MongoDB
-Import Mongoose and [connect to Mongo URI](https://docs.mlab.com/connecting/#connect-string).
-
-In `index.js`:
-```js
-const mongoose = require('mongoose');
-mongoose.connect('mongodb://<dbuser>:<dbpassword>@your-mongo-uri.mlab.com')
-```
-
-Note that your Mongo URI should be a *secret*, so you should put it inside `./config/keys` and import it to `index.js`.
-```js
-const keys = require('./config/keys');
-mongoose.connect(keys.mongoURI);
-```
-
-### Create User Collection
-We're going to create a **Model Class** with Mongoose. This model class will represent a **User Collection** inside our MongoDB database.
-
-To organize our models, create a new directory called `models/` inside `server/`. Create a new file for your User model `User.js`.
-
-In `./models/User.js`:
-```js
-const mongoose = require('mongoose');
-const { Schema } = mongoose;
-
-// Define user schema using Object of <field:datatype> pairs
-const userSchema = new Schema({
-	googleID: String
-});
-
-// Create model class
-mongoose.model('user', userSchema);
-```
-
-Inside `index.js`, make sure to require `User.js` to actually run the code and create the User model:
-```js
-require('./models/User');
-```
-
-### Create User Record
-To create an actual **record** or User instance:
-```js
-const User = mongoose.model('user');
-new User({ 'googleID': profile.id }).save();
-```
-
-### Check if User Exists in Database 
-So far, every time a user logs in, a new user record is created. We only want to add a user record *once* when they first sign on. 
-
-To fix this, we have to first check if the user exists in our database:
-
-1. If user exists: return that user's data.
-2. Else: create a new user record.
-
-In `./services/passport.js`:
-```js
-passport.use(new googleOAuthStrategy(
-	...,
-	(accessToken, refreshToken, profile, done) => {
-		// --- Insert logic here: ---
-			// Query DB for user given the Google ID
-			User.findOne({ googleID: profile.id })
-			.then((existingUser) => {
-				// If authorized user exists in database, query database for user's info
-				if (existingUser) {
-					...
-				// Else create new user
-				} else { 
-					new User({
-						googleID: profile.id
-					}).save();
-				}
-			})		
-		// --------------------------
-	}
-));
-```
-
-### Call `done()` to Complete Authentication
-You probably noticed by this point that your application stalls. We know that we are successfully creating user instances by checking our user collection on mLab, but the web app itself stalls and eventually gives you an error.
-
-We're missing a crucial step: we need to tell PassportJS when we complete our operation to continue the authentication process.
-
-To do this, we need to call `done()`. We already included the `done` function as a parameter in our callback function: `(accessToken, refreshToken, profile, done) => {...}`
-
-To call `done`, you need to pass in an error object and a record instance `done(err, record)`
-
-In `./services/passport.js`:
-```js
-		User.findOne({ googleID: profile.id })
-		.then((existingUser) => {
-			// If authorized user exists in database, query database for user's info
-			if (existingUser) {
-				done(null, existingUser);
-			// Else create new user
-			} else { 
-				new User({
-					googleID: profile.id
-				}).save()
-				.then(newUser => done(null, newUser));
-			}
-		})		
-
-```
-
-### Sessions
+## Sessions
 Most web apps use cookies to persist login. This means that you only need to access the credentials necessary to authenticate a user (i.e. username and password, or in this case, third-party OAuth) during the login request. If the login is authenticated, a unique cookie is set in the user's browser to establish a  session. Each subsequent request the user makes will not contain credentials--instead, the request will pass the cookie identifying the user's current session.
 
 To support login sessions, PassportJS **serializes** and **deserializes** user instances to and from the session. You'll need to define the following methods: `passport.serializeUser` and `passport.deserializeUser`.
@@ -169,6 +38,27 @@ passport.deserializeUser((id, done) => {
 	User.findById(id)
 	.then(user => done(null, user));
 });
+```
+
+## Enable Cookies Using Cookie-Session
+We're going to use a helper library called `cookie-session` to generate cookies to manage user authentication.
+
+```
+> yarn add cookie-session 
+// OR 
+> npm install cookie-session
+```
+
+In `index.js`:
+```
+const cookieSession = require("cookie-session");
+...
+app.use(
+	cookieSession({
+		maxAge: 30 * 24 * 60 * 60 * 1000,  // 30 days in ms
+		keys: []
+	})
+);
 ```
 
 

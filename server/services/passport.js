@@ -18,8 +18,8 @@ passport.deserializeUser((id, done) => {
 passport.use(
 	new googleOAuthStrategy(
 		{
-			clientID: keys.googleClientID,
-			clientSecret: keys.googleClientSecret,
+			clientID: keys.google.clientID,
+			clientSecret: keys.google.clientSecret,
 			callbackURL: "/auth/google/callback"
 		},
 		(accessToken, refreshToken, profile, done) => {
@@ -27,10 +27,13 @@ passport.use(
 			.then(existingUser => {
 				// If authorized user exists in database, query database for user's info
 				if (existingUser) {
+					console.log('Existing user')
+					console.log(existingUser)
 					done(null, existingUser);
 				
 				// Else create new user
 				} else {
+					console.log('Creating new user')
 					new User({
 						googleID: profile.id
 					}).save()
