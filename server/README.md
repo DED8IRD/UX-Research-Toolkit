@@ -53,14 +53,11 @@ In `index.js`:
 ```
 const cookieSession = require("cookie-session");
 ...
-app.use(
-	cookieSession({
-		maxAge: 30 * 24 * 60 * 60 * 1000,  // 30 days in ms
-		keys: []
-	})
-);
+app.use(cookieSession({
+	maxAge: 30 * 24 * 60 * 60 * 1000,  // 30 days in ms
+	keys: [keys.cookieKey]
+}));
 ```
-
 
 ## Feature Flow
 This is what goes on when we implement Google OAuth.

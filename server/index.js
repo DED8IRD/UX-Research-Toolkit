@@ -9,11 +9,6 @@ const keys = require("./config/keys");
 const userAuthRoutes = require("./routes/userAuthRoutes");
 require("./models/User");
 
-// Initialize Passport
-app.use(passport.initialize());
-app.use(passport.session());
-require("./services/passport");
-
 // Set up session cookies
 app.use(
 	cookieSession({
@@ -21,6 +16,11 @@ app.use(
 		keys: [keys.session.cookieKey]
 	})
 );
+
+// Initialize Passport
+app.use(passport.initialize());
+app.use(passport.session());
+require("./services/passport");
 
 // Connect MongoDB instance
 mongoose.connect(keys.mongo.URI);
