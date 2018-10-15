@@ -12,52 +12,13 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# Enable Cookies to Store User Sessions
+# Finish Login, Logout, and Redirect
+This is the final portion of the OAuth section. 
 
-So far, we have set up [steps 1-6 of UXTK's feature flow](#feature-flow). To complete step 7, we need to enable cookies and sessions. 
+## Logout 
 
-## Sessions
-Most web apps use cookies to persist login. This means that you only need to access the credentials necessary to authenticate a user (i.e. username and password, or in this case, third-party OAuth) during the login request. If the login is authenticated, a unique cookie is set in the user's browser to establish a  session. Each subsequent request the user makes will not contain credentials--instead, the request will pass the cookie identifying the user's current session.
 
-To support login sessions, PassportJS **serializes** and **deserializes** user instances to and from the session. You'll need to define the following methods: `passport.serializeUser` and `passport.deserializeUser`.
 
-These methods allow the user's data to be saved and retrieved from a session. 
-
-In `./services/passport.js` before `passport.use(...)`:
-
-#### Serialize User  
-```js
-passport.serializeUser((user, done) => {
-	done(null, user.id);
-});
-```
-
-#### Deserialize User 
-```js
-passport.deserializeUser((id, done) => {
-	User.findById(id)
-	.then(user => done(null, user));
-});
-```
-
-## Enable Cookies Using Cookie-Session
-We're going to use a helper library called `cookie-session` to generate cookies to manage user authentication.
-
-```
-> yarn add cookie-session 
-// OR 
-> npm install cookie-session
-```
-
-In `index.js`:
-```
-const cookieSession = require("cookie-session");
-...
-app.use(cookieSession({
-	maxAge: 30 * 24 * 60 * 60 * 1000,  // 30 days in ms
-	keys: [keys.cookieKey]
-}));
-```
 
 ## Feature Flow
 This is what goes on when we implement Google OAuth.
