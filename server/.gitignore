@@ -9,7 +9,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # Secrets
-keys.js
+dev-keys.js
 
 # Runtime data
 pids
