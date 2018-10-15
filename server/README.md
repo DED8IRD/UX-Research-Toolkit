@@ -3,6 +3,10 @@
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Set up production environment](#set-up-production-environment)
+  - [Create new MongoDB deployment](#create-new-mongodb-deployment)
+  - [Create new Google app](#create-new-google-app)
+  - [Configure `keys.js` for dev and prod environments](#configure-keysjs-for-dev-and-prod-environments)
+  - [Set up environment variables](#set-up-environment-variables)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
