@@ -1,3 +1,5 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
 # Build
 bundle.js
 
@@ -10,6 +12,17 @@ yarn-error.log*
 
 # Secrets
 dev-keys.js
+
+## CRA Assets
+# production
+build/
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # Runtime data
 pids
