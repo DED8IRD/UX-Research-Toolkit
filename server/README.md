@@ -86,3 +86,50 @@ To build the app for production mode in the `build/` directory:
 This optimizes (minimizes and bundles your static assets) your build for performance.
 
 Your app is ready to deploy at this point. 
+
+## Two Servers? 
+We're going to be developing with a separate server for our client and server-side code. The reason for this is that CRA comes bundled with a server already, and to keep things simple, we'll do a little bit of work to have the two servers play nicely.
+
+The React server will bundle our client files (i.e. React components and other JavaScript code) together and serve those files.
+
+The Express server will handle database calls and serve our content as JSON.
+
+### `Concurrently` to run the React and Express servers simultaneously
+You can run the client server and server-side server simultaneously in different windows (but that's not very elegant).
+
+A nicer way of having the client and server play nicely is to use a package called [Concurrently](https://www.npmjs.com/package/concurrently).
+
+#### Install
+```
+> yarn add concurrently 
+// OR 
+> npm install concurrently
+```
+
+#### Add scripts to `server/package.json`
+An important note to remember: we now have *two `package.json` files* (one in `server/` and one in `client/`). I'll make sure to make the distinction when modifying each.
+
+After we install `concurrently`, replace `scripts` with the following in `server/package.json`:
+
+```js 
+  "scripts": {
+    "start": "node index.js",
+    "server": "nodemon index.js",
+    "client": "yarn --cwd client start",
+    "dev": "concurrently \"yarn server\" \"yarn client\""
+  },
+```
+
+Or if you're using `npm`:
+```js 
+  "scripts": {
+    "start": "node index.js",
+    "server": "nodemon index.js",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm server\" \"npm client\""
+  },
+```
+
+Above, we changed the name of the old `dev` command to `server`, added the `client` command, and created a new `dev` command that uses `concurrently` to run both the client and backend servers concurrently.
+
+Now, simply run `yarn start` or `npm start` inside `server/` and both the React and Express servers should run simultaneously.
