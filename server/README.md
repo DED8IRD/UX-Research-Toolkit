@@ -16,6 +16,9 @@ We've completed setting up Google OAuth and created a basic backend Express app.
 
 We're going to use [Create-React-App](https://github.com/facebook/create-react-app) (CRA) to, well, create a React app. 
 
+In this section, we will create our client app and connect it to our Express API backend. 
+ 
+
 ## Create React App 
 Create-React-App lets you create React apps with no build configuration. You don’t need to install or configure tools like Webpack or Babel (CRA handles that for you with hidden configurations so that you can just get to writing code). CRA sets up a boilerplate React app, so you can start developing immediately.
 
@@ -90,6 +93,8 @@ Your app is ready to deploy at this point.
 ## Two Servers? 
 We're going to be developing with a separate server for our client and server-side code. The reason for this is that CRA comes bundled with a server already, and to keep things simple, we'll do a little bit of work to have the two servers play nicely.
 
+Note that in production mode, there will only be one server.
+
 The React server will bundle our client files (i.e. React components and other JavaScript code) together and serve those files.
 
 The Express server will handle database calls and serve our content as JSON.
@@ -133,3 +138,37 @@ Or if you're using `npm`:
 Above, we changed the name of the old `dev` command to `server`, added the `client` command, and created a new `dev` command that uses `concurrently` to run both the client and backend servers concurrently.
 
 Now, simply run `yarn start` or `npm start` inside `server/` and both the React and Express servers should run simultaneously.
+
+## Proxy API requests from client to server
+We are running two servers on different ports. To get our client server to access our server API endpoints, we proxy the React API requests to the Express app. 
+
+### If `react-scripts@1.X` (CRA 1)
+If your version of Create-React-App is 1.X, to set up a proxy, simply add the following line to `client/package.json`:
+```js 
+"proxy": "http://localhost:5000"
+```
+
+### If `react-scripts@2.X` (CRA 2)
+If your version of Create-React-App is 2.0+, configuring a proxy is a little more complicated.
+
+We're going to get direct access to our Express app instance and hook up some proxy middleware: `http-proxy-middleware`.
+
+The following will be done **at the client level**:
+
+1. Install proxy middleware:
+```
+> yarn add http-proxy-middleware
+// OR 
+> npm install http-proxy-middleware
+```
+
+2. Create the following file `client/src/setupProxy.js`:
+```js 
+const proxy = require('http-proxy-middleware')
+ 
+module.exports = function(app) {
+    app.use(proxy('/auth/*', { target: 'http://localhost:5000' }))
+}
+```
+Note: You do not need to import this file anywhere. It is automatically registered when you start the development server.
+
