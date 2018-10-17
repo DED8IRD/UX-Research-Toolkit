@@ -8,6 +8,15 @@
     - [Run app in development mode](#run-app-in-development-mode)
     - [Testing](#testing)
     - [Building](#building)
+  - [Two Servers?](#two-servers)
+    - [`Concurrently` to run the React and Express servers simultaneously](#concurrently-to-run-the-react-and-express-servers-simultaneously)
+      - [Install](#install)
+      - [Add scripts to `server/package.json`](#add-scripts-to-serverpackagejson)
+  - [Proxy API requests from client to server](#proxy-api-requests-from-client-to-server)
+    - [If `react-scripts@1.X` (CRA 1)](#if-react-scripts1x-cra-1)
+    - [If `react-scripts@2.X` (CRA 2)](#if-react-scripts2x-cra-2)
+    - [Add client to authorized redirect URIs](#add-client-to-authorized-redirect-uris)
+    - [What happens in production?](#what-happens-in-production)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -188,3 +197,8 @@ At this point run `yarn dev` to concurrently run both your client and backend se
 Click on the `Log in with Google` link. This should now redirect you to Google, but with the following error: `Error: redirect_uri_mismatch`. To fix this, follow the link it provides and update the authorized redirect URIs to include `http://localhost:3000/auth/google/callback`.
 
 Give Google a minute or two for the changes to come into effect. OAuth should be working again!
+
+### What happens in production? 
+You might be wondering how to set up a proxy for production mode. The answer is simple: *you don't*. The CRA server *doesn't exist* in production.
+
+For production mode, Webpack will bundle together all your static assets (JS/CSS/etc.) into your `client/build/` directory. This optimizes and bundles your files together, so in production all your server does is serve these static assets. There is only one server--one domain--so no proxy is needed. Simply push your build to Heroku (or whatever you're deploying on), have your Express routes point to your React app, and Express will be able to handle everything else.
