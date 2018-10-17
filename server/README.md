@@ -6,6 +6,7 @@
   - [Sessions](#sessions)
       - [Serialize User](#serialize-user)
       - [Deserialize User](#deserialize-user)
+  - [Enable Cookies Using Cookie-Session](#enable-cookies-using-cookie-session)
   - [Feature Flow](#feature-flow)
       - [PassportJS handles steps 2-5](#passportjs-handles-steps-2-5)
       - [MongoDB/Mongoose database for steps 6-7](#mongodbmongoose-database-for-steps-6-7)
