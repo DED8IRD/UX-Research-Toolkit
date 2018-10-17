@@ -24,12 +24,12 @@ We should instead set up our **production environment** with its own database, G
 Note that these are the same steps we've done earlier for our dev environment.
 
 ## Create new MongoDB deployment 
-1. Log in to [mlab.com] and create a new MongoDB deployment. 
+1. Log in to mlab.com and create a new MongoDB deployment. 
 2. Select **Sandbox** for the free plan (like we've done earlier). 
 3. Create a new user.
 
 ## Create new Google app
-1. Go to [console.developers.google.com] and create a new project.
+1. Go to console.developers.google.com and create a new project.
 2. Enable Google+ API.
 3. Generate new OAuth credentials.
 	- Set the `authorized JavaScript origins` and `authorized redirect origins` to your Heroku endpoints.
@@ -76,7 +76,7 @@ if (process.env.NODE_ENV === "production") {
 4. Modify `.gitignore` to ignore only `dev-keys.js`
 
 ## Set up environment variables
-1. Go to [heroku.com] and select your app.
+1. Go to heroku.com and select your app.
 2. Go to **Settings > Config Vars**
 3. Add your production keys
 4. Push to Heroku 
