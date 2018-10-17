@@ -143,7 +143,7 @@ Now, simply run `yarn dev` or `npm dev` inside `server/` and both the React and 
 We are running two servers on different ports. To get our client server to access our server API endpoints during development mode, we proxy the React API requests to the Express app. 
 
 Add the following line to `client/src/App.js`:
-```js 
+```html
 <a href="/auth/google">Log in with Google</a>
 ```
 
