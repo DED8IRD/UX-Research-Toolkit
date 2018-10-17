@@ -137,10 +137,20 @@ Or if you're using `npm`:
 
 Above, we changed the name of the old `dev` command to `server`, added the `client` command, and created a new `dev` command that uses `concurrently` to run both the client and backend servers concurrently.
 
-Now, simply run `yarn start` or `npm start` inside `server/` and both the React and Express servers should run simultaneously.
+Now, simply run `yarn dev` or `npm dev` inside `server/` and both the React and Express servers should run simultaneously.
 
 ## Proxy API requests from client to server
-We are running two servers on different ports. To get our client server to access our server API endpoints, we proxy the React API requests to the Express app. 
+We are running two servers on different ports. To get our client server to access our server API endpoints during development mode, we proxy the React API requests to the Express app. 
+
+Add the following line to `client/src/App.js`:
+```js 
+<a href="/auth/google">Log in with Google</a>
+```
+
+Go to [http://localhost:3000/] and click the link you just created. Notice how it doesn't take you to the Google OAuth page! This is because `'/auth/google'` is a *relative link*--`'localhost:3000'` is automatically appended to the path.
+
+To fix this, we want to proxy the React API requests to our server port (5000).
+
 
 ### If `react-scripts@1.X` (CRA 1)
 If your version of Create-React-App is 1.X, to set up a proxy, simply add the following line to `client/package.json`:
@@ -172,3 +182,9 @@ module.exports = function(app) {
 ```
 Note: You do not need to import this file anywhere. It is automatically registered when you start the development server.
 
+### Add client to authorized redirect URIs
+At this point run `yarn dev` to concurrently run both your client and backend servers. 
+
+Click on the `Log in with Google` link. This should now redirect you to Google, but with the following error: `Error: redirect_uri_mismatch`. To fix this, follow the link it provides and update the authorized redirect URIs to include `http://localhost:3000/auth/google/callback`.
+
+Give Google a minute or two for the changes to come into effect. OAuth should be working again!
