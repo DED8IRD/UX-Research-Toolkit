@@ -91,7 +91,7 @@ new User({ 'googleID': profile.id }).save();
 ### Check if User Exists in Database 
 So far, every time a user logs in, a new user record is created. We only want to add a user record *once* when they first sign on. 
 
-To fix this, we have to first check if the user exists in our database:
+To fix this, we're going to define a function `findOrCreateUser()` have to first check if the user exists in our database:
 
 1. If user exists: return that user's data.
 2. Else: create a new user record.
@@ -102,19 +102,20 @@ passport.use(new googleOAuthStrategy(
 	...,
 	(accessToken, refreshToken, profile, done) => {
 		// --- Insert logic here: ---
-			// Query DB for user given the Google ID
-			User.findOne({ googleID: profile.id })
-			.then((existingUser) => {
+			const findOrCreateUser = async () => {
+				// Query DB for user given the Google ID
+				const existingUser = await User.findOne({ googleID: profile.id });
 				// If authorized user exists in database, query database for user's info
 				if (existingUser) {
-					...
+						...
 				// Else create new user
 				} else { 
 					new User({
 						googleID: profile.id
 					}).save();
 				}
-			})		
+			};
+			findOrCreateUser();
 		// --------------------------
 	}
 ));
@@ -131,20 +132,21 @@ To call `done`, you need to pass in an error object and a record instance `done(
 
 In `./services/passport.js`:
 ```js
-		User.findOne({ googleID: profile.id })
-		.then((existingUser) => {
-			// If authorized user exists in database, query database for user's info
-			if (existingUser) {
-				done(null, existingUser);
-			// Else create new user
-			} else { 
-				new User({
-					googleID: profile.id
-				}).save()
-				.then(newUser => done(null, newUser));
-			}
-		})		
-
+const findOrCreateUser = async () => {
+	// Query DB for user given the Google ID
+	const existingUser = await User.findOne({ googleID: profile.id });
+	// If authorized user exists in database, query database for user's info
+	if (existingUser) {
+		done(null, existingUser);
+	// Else create new user
+	} else { 
+		const newUser = await new User({
+			googleID: profile.id
+		}).save();
+		done(null, newUser);
+	}
+};
+findOrCreateUser();
 ```
 
 ## Feature Flow
