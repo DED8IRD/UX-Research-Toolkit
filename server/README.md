@@ -2,7 +2,7 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [React Frontend](#react-frontend)
+- [Setting Up React Frontend](#setting-up-react-frontend)
   - [Create React App](#create-react-app)
     - [Create Project](#create-project)
     - [Run app in development mode](#run-app-in-development-mode)
@@ -20,7 +20,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# React Frontend
+# Setting Up React Frontend
 We've completed setting up Google OAuth and created a basic backend Express app. Now we're ready to move onto the frontend with React.
 
 We're going to use [Create-React-App](https://github.com/facebook/create-react-app) (CRA) to, well, create a React app. 
