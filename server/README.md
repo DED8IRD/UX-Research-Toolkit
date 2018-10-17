@@ -147,7 +147,7 @@ Add the following line to `client/src/App.js`:
 <a href="/auth/google">Log in with Google</a>
 ```
 
-Go to [http://localhost:3000/] and click the link you just created. Notice how it doesn't take you to the Google OAuth page! This is because `'/auth/google'` is a *relative link*--`'localhost:3000'` is automatically appended to the path.
+Go to http://localhost:3000/ and click the link you just created. Notice how it doesn't take you to the Google OAuth page! This is because `'/auth/google'` is a *relative link*--`'localhost:3000'` is automatically appended to the path.
 
 To fix this, we want to proxy the React API requests to our server port (5000).
 
