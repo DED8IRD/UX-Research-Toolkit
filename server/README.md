@@ -27,11 +27,11 @@ We're going to use [Create-React-App](https://github.com/facebook/create-react-a
 
 In this section, we will create our client app and connect it to our Express API backend. 
  
-
-## Create React App 
+## Create Client App
+### Create React App 
 Create-React-App lets you create React apps with no build configuration. You don’t need to install or configure tools like Webpack or Babel (CRA handles that for you with hidden configurations so that you can just get to writing code). CRA sets up a boilerplate React app, so you can start developing immediately.
 
-### Create Project
+#### Create Project
 We're going to create a CRA app called `client` inside our `server/` directory.
 
 ```
@@ -45,14 +45,14 @@ This will create a directory called `client/` inside the current directory. Insi
 ```
 client/
 ├── README.md
-├── node_modules
-├── package.json
+├── node_modules/
+├── package.json/
 ├── .gitignore
-├── public
+├── public/
 │   ├── favicon.ico
 │   ├── index.html
 │   └── manifest.json
-└── src
+└── src/
     ├── App.css
     ├── App.js
     ├── App.test.js
@@ -62,7 +62,7 @@ client/
     └── serviceWorker.js
 ```
 
-### Run app in development mode 
+#### Run app in development mode 
 To run your client dev server, enter your React app directory:
 ```
 > cd client
@@ -79,7 +79,7 @@ You React app should be live at [ http://localhost:3000].
 
 The built-in dev server has live reloading, so any changes you make will automatically reload onto the page. Build errors and lint warnings will appear in the console.
 
-### Testing 
+#### Testing 
 To run the test watcher in an interactive mode:
 ```
 > yarn test 
@@ -87,7 +87,7 @@ To run the test watcher in an interactive mode:
 > npm test
 ```
 
-### Building 
+#### Building 
 To build the app for production mode in the `build/` directory:
 ```
 > yarn build
@@ -99,7 +99,8 @@ This optimizes (minimizes and bundles your static assets) your build for perform
 
 Your app is ready to deploy at this point. 
 
-## Two Servers? 
+## Connect Frontend with Backend
+### Two Servers? 
 We're going to be developing with a separate server for our client and server-side code. The reason for this is that CRA comes bundled with a server already, and to keep things simple, we'll do a little bit of work to have the two servers play nicely.
 
 Note that in production mode, there will only be one server.
@@ -108,19 +109,19 @@ The React server will bundle our client files (i.e. React components and other J
 
 The Express server will handle database calls and serve our content as JSON.
 
-### `Concurrently` to run the React and Express servers simultaneously
+#### `Concurrently` to run the React and Express servers simultaneously
 You can run the client server and server-side server simultaneously in different windows (but that's not very elegant).
 
 A nicer way of having the client and server play nicely is to use a package called [Concurrently](https://www.npmjs.com/package/concurrently).
 
-#### Install
+##### Install
 ```
 > yarn add concurrently 
 // OR 
 > npm install concurrently
 ```
 
-#### Add scripts to `server/package.json`
+##### Add scripts to `server/package.json`
 An important note to remember: we now have *two `package.json` files* (one in `server/` and one in `client/`). I'll make sure to make the distinction when modifying each.
 
 After we install `concurrently`, replace `scripts` with the following in `server/package.json`:
@@ -148,7 +149,7 @@ Above, we changed the name of the old `dev` command to `server`, added the `clie
 
 Now, simply run `yarn dev` or `npm dev` inside `server/` and both the React and Express servers should run simultaneously.
 
-## Proxy API requests from client to server
+### Proxy API requests from client to server
 We are running two servers on different ports. To get our client server to access our server API endpoints during development mode, we proxy the React API requests to the Express app. 
 
 Add the following line to `client/src/App.js`:
@@ -161,13 +162,13 @@ Go to http://localhost:3000/ and click the link you just created. Notice how it 
 To fix this, we want to proxy the React API requests to our server port (5000).
 
 
-### If `react-scripts@1.X` (CRA 1)
+#### If `react-scripts@1.X` (CRA 1)
 If your version of Create-React-App is 1.X, to set up a proxy, simply add the following line to `client/package.json`:
 ```js 
 "proxy": "http://localhost:5000"
 ```
 
-### If `react-scripts@2.X` (CRA 2)
+#### If `react-scripts@2.X` (CRA 2)
 If your version of Create-React-App is 2.0+, configuring a proxy is a little more complicated.
 
 We're going to get direct access to our Express app instance and hook up some proxy middleware: `http-proxy-middleware`.
@@ -191,14 +192,95 @@ module.exports = function(app) {
 ```
 Note: You do not need to import this file anywhere. It is automatically registered when you start the development server.
 
-### Add client to authorized redirect URIs
+#### Add client to authorized redirect URIs
 At this point run `yarn dev` to concurrently run both your client and backend servers. 
 
 Click on the `Log in with Google` link. This should now redirect you to Google, but with the following error: `Error: redirect_uri_mismatch`. To fix this, follow the link it provides and update the authorized redirect URIs to include `http://localhost:3000/auth/google/callback`.
 
 Give Google a minute or two for the changes to come into effect. OAuth should be working again!
 
-### What happens in production? 
+#### What happens in production? 
 You might be wondering how to set up a proxy for production mode. The answer is simple: *you don't*. The CRA server *doesn't exist* in production.
 
 For production mode, Webpack will bundle together all your static assets (JS/CSS/etc.) into your `client/build/` directory. This optimizes and bundles your files together, so in production all your server does is serve these static assets. There is only one server--one domain--so no proxy is needed. Simply push your build to Heroku (or whatever you're deploying on), have your Express routes point to your React app, and Express will be able to handle everything else.
+
+## Frontend Architecture 
+Our React client app will be primary composed of two layers, each contained in a single file:
+1. Data layer: `client/src/index.js`
+	- Data logic (Redux)
+2. Rendering layer: `client/src/App.js`
+	- Component logic (React Router)
+
+### Component architecture
+UXTK will contain the following components:
+- `<Header>`: navbar 
+- `<Landing>`: landing page
+- `<Dashboard>`: dashboard of user surveys 
+	- `<SurveyList>`: survey list
+		- `<Survey>`: individual survey 
+			- `<Report>`: report of survey responses
+- `<CreateSurveyForm>`: create/customize survey form 
+	- `<SurveyField>`: individual form fields
+
+## Set Up React App
+Create-React-App comes prepackaged with a lot of boilerplate code. We're going to get rid of that and start from scratch.
+
+Remove everything from `client/src/` *except* `serviceWorker.js` and `setupProxy.js` (if you have it).
+
+Create a new directory named `components`. Create a new file within `components/` called `App.js`and add the following within:
+```jsx 
+import React from 'react';
+
+const App = () => {
+	return (
+		<React.Fragment>
+			Hello World!
+		</React.Fragment>
+	);
+};
+
+export default App;
+```
+
+Create a new file named `index.js` and add the following lines:
+```jsx 
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './components/App';
+
+ReactDOM.render(
+	<App />, 
+	document.querySelector('#root')
+);
+
+```
+
+`client/` should look like this now:
+```
+client/
+├── README.md
+├── node_modules/
+├── package.json/
+├── .gitignore
+├── public/
+│   ├── favicon.ico
+│   ├── index.html
+│   └── manifest.json
+└── src/
+    ├── components/ 
+	│	└── App.js
+    ├── index.js
+    ├── serviceWorker.js
+    └── setupProxy.js
+```
+
+Run your dev servers `yarn dev` and you should see `Hello World!` onscreen.
+
+### Install Redux, React-Router 
+**Important:** Make sure you are inside the `client/` directory when adding the following modules:
+
+```
+> yarn add redux, react-redux, react-router-dom
+// OR 
+> npm install redux, react-redux, react-router-dom
+```
