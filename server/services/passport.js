@@ -14,20 +14,22 @@ passport.use(
 			callbackURL: "/auth/google/callback"
 		},
 		(accessToken, refreshToken, profile, done) => {
-			User.findOne({ googleID: profile.id })
-			.then(existingUser => {
+			const findOrCreateUser = async () => {
+				const existingUser = await User.findOne({ googleID: profile.id });
+
 				// If authorized user exists in database, query database for user's info
 				if (existingUser) {
 					done(null, existingUser);
 				
 				// Else create new user
 				} else {
-					new User({
+					const newUser = await new User({
 						googleID: profile.id
-					}).save()
-					.then(newUser => done(null, newUser));
+					}).save();
+					done(null, newUser);
 				}
-			});
+			};
+			findOrCreateUser();
 		}
 	)
 );
