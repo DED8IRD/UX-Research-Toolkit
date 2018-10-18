@@ -81,7 +81,7 @@ Run the `start` command:
 > npm start
 ```
 
-You React app should be live at [ http://localhost:3000]. 
+Your React app should be live at [ http://localhost:3000]. 
 
 The built-in dev server has live reloading, so any changes you make will automatically reload onto the page. Build errors and lint warnings will appear in the console.
 
