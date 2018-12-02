@@ -1,8 +1,9 @@
 // Header.js
 import React from 'react'
+import {Link} from 'react-router-dom'
 import {Menu, Button, Dropdown, Icon, Responsive} from 'semantic-ui-react'
 
-const NavBarMobile = ({children, navbarItems, activeItem, handleMenuItemClick}) => {
+const NavBarMobile = ({children, activeItem, handleMenuItemClick}) => {
 	return (
 		<Menu 
 			content='UXTK'
@@ -19,18 +20,13 @@ const NavBarMobile = ({children, navbarItems, activeItem, handleMenuItemClick}) 
 			<Menu.Item>
 				<Dropdown icon='bars'>
 					<Dropdown.Menu>
-						{navbarItems.map((name) => {
-							const normalizedName = name.split(' ').join('-').toLowerCase()
-							return (
-								<Dropdown.Item key={normalizedName}
-									name={normalizedName}
-									disabled={activeItem === normalizedName}
-									onClick={handleMenuItemClick}
-								>
-									{name}
+								<Dropdown.Item>
+								 	<Link to='/'
+										name='home'
+										disabled={activeItem === 'home'}
+										onClick={handleMenuItemClick}
+									/>
 								</Dropdown.Item>
-							)
-						})}
 					</Dropdown.Menu>
 				</Dropdown>
 			</Menu.Item>				
@@ -43,7 +39,7 @@ const NavBarMobile = ({children, navbarItems, activeItem, handleMenuItemClick}) 
 	)
 }
 
-const NavBarDesktop = ({children, navbarItems, activeItem, handleMenuItemClick}) => {
+const NavBarDesktop = ({children, activeItem, handleMenuItemClick}) => {
 	return (
 		<Menu 
 			pointing 
@@ -59,16 +55,21 @@ const NavBarDesktop = ({children, navbarItems, activeItem, handleMenuItemClick})
 			<Menu.Item 
 				content='UXTK'
 			/>					
-			{navbarItems.map((name) => {
-				const normalizedName = name.split(' ').join('-').toLowerCase()
-				return (
-					<Menu.Item key={normalizedName}
-						name={normalizedName}
-						active={activeItem === normalizedName}
-						onClick={handleMenuItemClick}
-					/>
-				)
-			})}
+			<Menu.Item as={Link} to='/'
+				name='home'
+				active={activeItem === 'home'}
+				onClick={handleMenuItemClick}
+			/>
+			<Menu.Item as={Link} to='/surveys'
+				name='dashboard'
+				active={activeItem === 'dashboard'}
+				onClick={handleMenuItemClick}
+			/>
+			<Menu.Item as={Link} to='/surveys/new'
+				name='create-new-survey'
+				active={activeItem === 'create-new-survey'}
+				onClick={handleMenuItemClick}
+			/>
       <Menu.Menu position='right'>
       	<Menu.Item>
 		      <Button secondary>Sign in</Button>
@@ -94,20 +95,16 @@ export default class Header extends React.Component {
 	}
 
 	render() {
-		const navbarItems = ['Home', 'Dashboard', 'Create survey']
-
 		return (
 			<div>
 				<Responsive {...Responsive.onlyMobile}>
 					<NavBarMobile 
-						navbarItems={navbarItems} 
 						activeItem={this.state.activeItem}
 						handleMenuItemClick={this.handleMenuItemClick}
 					/>
 				</Responsive>
 				<Responsive minWidth={Responsive.onlyTablet.minWidth}>
 					<NavBarDesktop 
-						navbarItems={navbarItems} 
 						activeItem={this.state.activeItem}
 						handleMenuItemClick={this.handleMenuItemClick}
 					/>
