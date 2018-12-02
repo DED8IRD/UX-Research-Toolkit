@@ -20,13 +20,24 @@ const NavBarMobile = ({children, activeItem, handleMenuItemClick}) => {
 			<Menu.Item>
 				<Dropdown icon='bars'>
 					<Dropdown.Menu>
-								<Dropdown.Item>
-								 	<Link to='/'
-										name='home'
-										disabled={activeItem === 'home'}
-										onClick={handleMenuItemClick}
-									/>
-								</Dropdown.Item>
+					 	<Dropdown.Item as={Link} to='/'
+							name='home'
+							content='Home'
+							disabled={activeItem === 'home'}
+							onClick={handleMenuItemClick}
+						/>
+					 	<Dropdown.Item as={Link} to='/surveys'
+							name='dashboard'
+							content='Dashboard'
+							disabled={activeItem === 'dashboard'}
+							onClick={handleMenuItemClick}
+						/>
+					 	<Dropdown.Item as={Link} to='/surveys/new'
+							name='create-new-survey'
+							content='Create New Survey'
+							disabled={activeItem === 'create-new-survey'}
+							onClick={handleMenuItemClick}
+						/>
 					</Dropdown.Menu>
 				</Dropdown>
 			</Menu.Item>				
