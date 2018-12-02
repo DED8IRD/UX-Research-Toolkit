@@ -9,11 +9,12 @@ import CreateSurveyField from './CreateSurveyField'
 import SurveyField from './SurveyField'
 
 export default class CreateSurveyForm extends React.Component {
-
   constructor(props) {
     super(props)
     this.state = {
-      surveyFields: [],
+      title: props.title,
+      description: props.description,
+      surveyFields: props.surveyFields,
       newField: undefined,
       fieldType: undefined,
       fieldLabel: undefined
@@ -127,3 +128,9 @@ export default class CreateSurveyForm extends React.Component {
     )
   }
 }
+
+CreateSurveyForm.defaultProps = {
+  title: '',
+  description: '',
+  surveyFields: [],
+}  

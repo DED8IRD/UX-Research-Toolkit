@@ -10,10 +10,8 @@ const App = () => {
 		<Responsive>
 			<Header />
 			<Container style={{paddingTop: '7em'}}>
-				{/*
-				<Landing />
 				<Dashboard />
-				*/}
+				<Landing />
 				<CreateSurveyForm />
 			</Container>
 		</Responsive>
