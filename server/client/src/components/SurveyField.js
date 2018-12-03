@@ -7,7 +7,6 @@ const SurveyField = ({type, name, options}) => {
 		case 'text':
 		  return (
 		    <Form.Input 
-		    	fluid 
 		    	label={name}
 		    	placeholder={name}
 		    />
@@ -15,7 +14,6 @@ const SurveyField = ({type, name, options}) => {
 		case 'textarea':
 		  return (
 		    <Form.TextArea 
-		    	fluid 
 		    	label={name}
 		    />
 		  )
@@ -23,7 +21,6 @@ const SurveyField = ({type, name, options}) => {
 			options = options.map((option) => ({key: option, value: option, text:option}))
 		  return (
 		    <Form.Select 
-		    	fluid 
 		    	label={name}
 		    	placeholder={name}
 		    	options={options}
@@ -33,9 +30,8 @@ const SurveyField = ({type, name, options}) => {
 		  return (
 		  	<Form.Group>
 		  		<label>{name}</label>
-		  		{options.map((option) => (
-				    <Form.Checkbox 
-				    	fluid 
+		  		{options.map((option, idx) => (
+				    <Form.Checkbox key={idx}
 				    	label={option}
 				    />
 		  		))}

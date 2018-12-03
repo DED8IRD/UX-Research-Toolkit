@@ -9,7 +9,7 @@ const NavBarMobile = ({children, activeItem, handleMenuItemClick}) => {
 			content='UXTK'
 			fixed='top'
 		>
-			<Menu.Item
+			<Menu.Item as={Link} to='/'
 				name='brand'
 			>
 				<span>
@@ -58,7 +58,7 @@ const NavBarDesktop = ({children, activeItem, handleMenuItemClick}) => {
 			fixed='top'
 			size='large'
 		>
-			<Menu.Item
+			<Menu.Item as={Link} to='/'
 				name='brand'
 			>
 				<img src={process.env.PUBLIC_URL + '/favicon.ico'} />
