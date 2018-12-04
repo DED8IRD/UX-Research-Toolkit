@@ -7,9 +7,32 @@ import Landing from './Landing'
 import Dashboard from './Dashboard'
 import CreateSurveyForm from './CreateSurveyForm'
 
+const DesktopContainer = ({children}) => {
+  return (
+    <Responsive minWidth={Responsive.onlyTablet.minWidth}>
+      {children}
+    </Responsive>
+  )
+}
+
+const MobileContainer = ({children}) => {
+  return (
+    <Responsive maxWidth={Responsive.onlyMobile.maxWidth}>
+      {children}
+    </Responsive>
+  )
+}
+
+const ResponsiveContainer = ({ children }) => (
+  <div>
+    <DesktopContainer>{children}</DesktopContainer>
+    <MobileContainer>{children}</MobileContainer>
+  </div>
+)
+
 const App = () => {
 	return (
-		<Responsive>
+		<ResponsiveContainer>
 			<Router>
 				<React.Fragment>
 					<Header />
@@ -20,7 +43,7 @@ const App = () => {
 					</Container>
 				</React.Fragment>	
 			</Router>
-		</Responsive>
+		</ResponsiveContainer>
 	)
 }
 

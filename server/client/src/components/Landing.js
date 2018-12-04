@@ -7,61 +7,17 @@ import {
   Divider,
   Grid,
   Header,
-  Icon,
   Image,
   List,
   Menu,
-  Responsive,
   Segment,
-  Sidebar,
-  Visibility,
 } from 'semantic-ui-react'
 
 
-class DesktopContainer extends React.Component {
-  render() {
-    const { children } = this.props
 
-    return (
-      <Responsive minWidth={Responsive.onlyTablet.minWidth}>
-        {children}
-      </Responsive>
-    )
-  }
-}
-
-DesktopContainer.propTypes = {
-  children: PropTypes.node,
-}
-
-class MobileContainer extends React.Component {
-  render() {
-    const { children } = this.props
-    return (
-      <Responsive maxWidth={Responsive.onlyMobile.maxWidth}>
- 				{children}
-      </Responsive>
-    )
-  }
-}
-
-MobileContainer.propTypes = {
-  children: PropTypes.node,
-}
-
-const ResponsiveContainer = ({ children }) => (
-  <div>
-    <DesktopContainer>{children}</DesktopContainer>
-    <MobileContainer>{children}</MobileContainer>
-  </div>
-)
-
-ResponsiveContainer.propTypes = {
-  children: PropTypes.node,
-}
 
 const Landing = () => (
-  <ResponsiveContainer>
+  <Container>
   	<Image fluid src={process.env.PUBLIC_URL + '/UX-Banner.jpg'} />
     <Segment style={{ padding: '8em 0em' }} vertical>
       <Grid container stackable verticalAlign='middle'>
@@ -183,7 +139,7 @@ const Landing = () => (
         </Grid>
       </Container>
     </Segment>
-  </ResponsiveContainer>
+  </Container>
 )
 
 export default Landing
