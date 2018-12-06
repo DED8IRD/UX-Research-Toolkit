@@ -3,7 +3,6 @@ import React from 'react'
 import {
 	Header,
 	Form,
-	Item
 } from 'semantic-ui-react'
 import SurveyField from './SurveyField'
 

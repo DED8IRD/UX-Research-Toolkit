@@ -37,7 +37,8 @@ const SurveyField = ({type, name, options}) => {
 		  		))}
 		  	</Form.Group>
 		  )
-
+		default:
+			return
 	} 
 }
 

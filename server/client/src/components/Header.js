@@ -1,7 +1,13 @@
 // Header.js
 import React from 'react'
 import {Link} from 'react-router-dom'
-import {Menu, Button, Dropdown, Icon, Responsive} from 'semantic-ui-react'
+import {
+	Menu, 
+	Button, 
+	Dropdown, 
+	Image,
+	Responsive
+} from 'semantic-ui-react'
 
 const NavBarMobile = ({children, activeItem, handleMenuItemClick}) => {
 	return (
@@ -13,7 +19,12 @@ const NavBarMobile = ({children, activeItem, handleMenuItemClick}) => {
 				name='brand'
 			>
 				<span>
-					<img src={process.env.PUBLIC_URL + '/favicon.ico'} width='30px' height='30px' />
+					<Image 
+						src={process.env.PUBLIC_URL + '/favicon.ico'} 
+						alt='UXTK logo'
+						width='30px' 
+						height='30px' 
+					/>
 					<p>UXTK</p>
 				</span>
 			</Menu.Item>
@@ -61,7 +72,12 @@ const NavBarDesktop = ({children, activeItem, handleMenuItemClick}) => {
 			<Menu.Item as={Link} to='/'
 				name='brand'
 			>
-				<img src={process.env.PUBLIC_URL + '/favicon.ico'} />
+				<Image 
+					src={process.env.PUBLIC_URL + '/favicon.ico'} 
+					alt='UXTK logo'
+					width='30px' 
+					height='30px' 
+				/>			
 			</Menu.Item>
 			<Menu.Item 
 				content='UXTK'

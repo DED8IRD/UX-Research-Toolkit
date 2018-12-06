@@ -1,10 +1,9 @@
 // SurveyList.js
 import React from 'react'
 import {
-	Segment,
 	Card
 } from 'semantic-ui-react'
-import Survey from './Survey'
+// import Survey from './Survey'
 
 export default class SurveyList extends React.Component {
 

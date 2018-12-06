@@ -1,5 +1,4 @@
 // Landing.js
-import PropTypes from 'prop-types'
 import React from 'react'
 import {
   Button,
@@ -9,7 +8,6 @@ import {
   Header,
   Image,
   List,
-  Menu,
   Segment,
 } from 'semantic-ui-react'
 
@@ -18,7 +16,10 @@ import {
 
 const Landing = () => (
   <Container>
-  	<Image fluid src={process.env.PUBLIC_URL + '/UX-Banner.jpg'} />
+  	<Image fluid 
+  		src={process.env.PUBLIC_URL + '/UX-Banner.jpg'} 
+  		alt='UX banner'
+  	/>
     <Segment style={{ padding: '8em 0em' }} vertical>
       <Grid container stackable verticalAlign='middle'>
         <Grid.Row>
@@ -37,7 +38,10 @@ const Landing = () => (
             </p>
           </Grid.Column>
           <Grid.Column floated='right' width={6}>
-            <Image bordered rounded size='large' src={process.env.PUBLIC_URL + '/favicon.ico'} />
+            <Image fluid 
+            	src={process.env.PUBLIC_URL + '/favicon.ico'} 
+            	alt='UXTK logo'
+            />
           </Grid.Column>
           <Grid.Row textAlign='center'>
             <Button size='huge'>Try out now</Button>
