@@ -2,9 +2,9 @@
 ## Frontend Architecture 
 Our React client app will be primary composed of two layers, each contained in a single file:
 1. Data layer: `client/src/index.js`
-  - Data logic (Redux)
+    - Data logic (Redux)
 2. Rendering layer: `client/src/App.js`
-  - Component logic (React Router)
+    - Component logic (React Router)
 
 ### Component architecture
 UXTK will contain the following components:
