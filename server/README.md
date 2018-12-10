@@ -28,8 +28,8 @@ UXTK will contain the following components:
 - `<SurveyField>`
 
 #### Container components
-- `<DashboardContainer>`
-- `<CreateSurveyFormContainer>`
+- `<SurveyListContainer>`
+- `<CreateSurvey>`
 
 ## UI Framework
 Though never necessary, using a CSS framework can make frontend development much easier. Instead of using a CSS framework like Bootstrap, or Materialize, I suggest using a **UI framework** for your React applications. A UI framework basically has prebuilt styled components for you to use in your React apps. 
@@ -50,4 +50,4 @@ import 'semantic-ui-css/semantic.min.css';
 
   Refer to [React Semantic UI's documentation](https://react.semantic-ui.com/) on how to use its components. 
 ___
-In this section, we will set up the presentational components.
+In this section, we will set up the presentational components. In the next section we will hook up Redux and our container components.
